@@ -49,6 +49,11 @@ export default function HomeFooter() {
                 title="Succès"
                 onPress={() => router.push('/achievements')}
             />
+
+            <Button
+                title="Leaderboard"
+                onPress={() => router.push('/leaderboard/leaderboard')}
+            />
         </View>
     );
 }

@@ -3,29 +3,21 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
+import { login } from '../api/auth/login';
 
 export default function LoginScreen() {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
 
     async function handleLogin() {
-        // Vérification minimaliste
-        // On lit dans AsyncStorage la clé "user_<email>"
-        const storedUser = await AsyncStorage.getItem(`user_${email}`);
-        if (!storedUser) {
-            alert('Utilisateur non trouvé, ou pas inscrit');
-            return;
+        try {
+            const data = await login(username, password); 
+            await AsyncStorage.setItem('token', data.data.access_token);
+            router.push('/');
+        } catch (error) {
+            alert('Erreur de connexion, veuillez réessayer.');
         }
-        const parsed = JSON.parse(storedUser);
-        if (parsed.password !== password) {
-            alert('Mot de passe incorrect');
-            return;
-        }
-        // On stocke "logged in" quelque part, par ex. "currentUser"
-        await AsyncStorage.setItem('currentUser', email);
-        // redirect to home, or tetris
-        router.push('/');
     }
 
     return (
@@ -34,10 +26,10 @@ export default function LoginScreen() {
 
             <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="Nom d'utilisateur"
                 placeholderTextColor="#999"
-                value={email}
-                onChangeText={setEmail}
+                value={username}
+                onChangeText={setUsername}
             />
             <TextInput
                 style={styles.input}
@@ -53,19 +45,29 @@ export default function LoginScreen() {
             <Link href="/auth/register" style={styles.link}>
                 Pas de compte ? S’inscrire
             </Link>
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex:1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#1A1A1A',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#1A1A1A',
     },
     title: {
-        color: '#fff', fontSize: 24, marginBottom: 20,
+        color: '#fff',
+        fontSize: 24,
+        marginBottom: 20,
     },
     input: {
-        width: '80%', padding: 10, marginBottom: 12, backgroundColor: '#333', color: '#fff',
+        width: '80%',
+        padding: 10,
+        marginBottom: 12,
+        backgroundColor: '#333',
+        color: '#fff',
         borderRadius: 8,
     },
     link: {

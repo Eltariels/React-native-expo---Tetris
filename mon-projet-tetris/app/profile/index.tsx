@@ -1,23 +1,47 @@
-// app/profile/index.tsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Link } from 'expo-router';
+import { getUserData } from '../api/auth/me';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ProfileScreen() {
+    const [username, setUsername] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                console.log(token);
+                if (token) {
+                    const userData = await getUserData();
+                    setUsername(userData.data.username);
+                }
+            } catch (error) {
+                console.error('Erreur de récupération des données utilisateur', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
+    if (isLoading) {
+        return <Text style={styles.info}>Chargement...</Text>;
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Mon Profil</Text>
 
-            {/* Simulons un avatar */}
             <Image
-                source={{ uri: 'https://placekitten.com/200/200' }}
+                source={{ uri: 'https://picsum.photos/200' }}
                 style={styles.avatar}
             />
 
-            <Text style={styles.info}>Pseudo : JohnDoe</Text>
-            <Text style={styles.info}>Email : johndoe@example.com</Text>
+            <Text style={styles.info}>Pseudo : {username || 'Non renseigné'}</Text>
 
-            {/* Bouton ou Link vers la page stats */}
             <Link href="/profile/stats" style={styles.link}>
                 Voir mes stats
             </Link>

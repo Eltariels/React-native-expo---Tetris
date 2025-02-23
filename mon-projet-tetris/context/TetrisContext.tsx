@@ -1,5 +1,6 @@
 // context/TetrisContext.tsx
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { saveGameScore } from '../app/api/games/saveGame'; // Vérifie bien le chemin du fichier
 import { useSegments } from 'expo-router';
 import { Board, Piece } from '@/types';
 import {
@@ -143,6 +144,14 @@ export function TetrisProvider({ children }: { children: React.ReactNode }) {
         checkAchievements(score, lines, gamesPlayed + 1);
     }, [score, lines, gamesPlayed, checkAchievements]);
 
+    const handleGameOver = async () => {
+        try {
+            await saveGameScore(score, lines, totalPlayTime);
+        } catch (error) {
+            console.error('Erreur lors de l’enregistrement du score:', error);
+        }
+    };
+
     // softDrop
     const softDrop = useCallback(() => {
         const testPiece = { ...activePiece, row: activePiece.row + 1 };
@@ -169,14 +178,16 @@ export function TetrisProvider({ children }: { children: React.ReactNode }) {
             setHasHeld(false);
 
             if (!canPlacePiece(newBoard, freshActive)) {
-                // Game Over
-                setBestScore((prev) => (score > prev ? score : prev));
-                setBestLines((prev) => {
-                    const newTotal = lines + linesCleared;
-                    return newTotal > prev ? newTotal : prev;
-                });
-                updatePlayTime();
-                setGameOver(true); // déclare game over
+                if (!gameOver) {  // Vérifie que le jeu n'est pas déjà en Game Over
+                    setBestScore((prev) => (score > prev ? score : prev));
+                    setBestLines((prev) => {
+                        const newTotal = lines + linesCleared;
+                        return newTotal > prev ? newTotal : prev;
+                    });
+                    updatePlayTime();
+                    setGameOver(true);
+                    handleGameOver();
+                }
             } else {
                 setActivePiece(freshActive);
                 setNextPiece(freshNext);
@@ -226,13 +237,16 @@ export function TetrisProvider({ children }: { children: React.ReactNode }) {
         setHasHeld(false);
 
         if (!canPlacePiece(newBoard, freshActive)) {
-            setBestScore((prev) => (score > prev ? score : prev));
-            setBestLines((prev) => {
-                const newTotal = lines + linesCleared;
-                return newTotal > prev ? newTotal : prev;
-            });
-            updatePlayTime();
-            setGameOver(true);
+            if (!gameOver) {  // Vérifie que le jeu n'est pas déjà en Game Over
+                setBestScore((prev) => (score > prev ? score : prev));
+                setBestLines((prev) => {
+                    const newTotal = lines + linesCleared;
+                    return newTotal > prev ? newTotal : prev;
+                });
+                updatePlayTime();
+                setGameOver(true);
+                handleGameOver();
+            }
         } else {
             setActivePiece(freshActive);
             setNextPiece(freshNext);
