@@ -10,7 +10,7 @@ export const getStats = async () => {
             throw new Error('Token non trouvé');
         }
 
-        const response = await fetch(`${API_URL}/users/me/games`, {
+        const response = await fetch(`${API_URL}/users/me/profil`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -23,6 +23,7 @@ export const getStats = async () => {
         }
 
         const data = await response.json();
+        console.log(data);
         
         return data;
     } catch (error) {

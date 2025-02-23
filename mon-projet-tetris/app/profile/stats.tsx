@@ -1,58 +1,25 @@
-import { useTetris } from '@/context/TetrisContext';
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { getStats } from '../api/profil/stats';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-function formatSeconds(sec: number): string {
-    const h = Math.floor(sec / 3600);
-    const m = Math.floor((sec % 3600) / 60);
-    const s = sec % 60;
-    return `${h}h ${m}m ${s}s`;
-}
 
 export default function StatsScreen() {
-    const [bestScore, setBestScore] = useState<number>(0);
-    const [bestLines, setBestLines] = useState<number>(0);
-    const [bestTime, setBestTime] = useState<number>(0);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    useEffect(() => {
-        const fetchUserDataAndGames = async () => {
-            try {
-                const token = await AsyncStorage.getItem('token');
-                if (token) {
-                    const gamesData = await getStats();
-                    
-                    let maxScore = 0;
-                    let maxLines = 0;
-                    let minTime = 0;
-                    
-                    gamesData.data.forEach((game: { score: number; lines_cleared: number; duration: number }) => {
-                        if (game.score > maxScore) {
-                            maxScore = game.score;
-                        }
-                        if (game.lines_cleared > maxLines) {
-                            maxLines = game.lines_cleared;
-                        }
-                        if (game.duration > minTime) {
-                            minTime = game.duration;
-                        }
-                    });
-
-                    setBestScore(maxScore);
-                    setBestLines(maxLines);
-                    setBestTime(minTime);
+    const [userData, setUserData] = useState<any>({});
+    
+        useEffect(() => {
+            const fetchUserData = async () => {
+                try {
+                    const stats = await getStats();
+                    setUserData(stats.data);
+                } catch (error) {
+                    console.error('Erreur de récupération des données utilisateur', error);
+                } finally {
+                    setIsLoading(false);
                 }
-            } catch (error) {
-                console.error('Erreur de récupération des données', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchUserDataAndGames();
-    }, []);
+            };
+    
+            fetchUserData();
+        }, []);
 
     if (isLoading) {
         return <Text style={styles.info}>Chargement...</Text>;
@@ -63,19 +30,35 @@ export default function StatsScreen() {
             <Text style={styles.title}>Mes Statistiques</Text>
 
             <View style={styles.statsBox}>
+                <Text style={styles.statLabel}>Parties jouées :</Text>
+                <Text style={styles.statValue}>{userData.totalGames}</Text>
+            </View>
+
+            <View style={styles.statsBox}>
+                <Text style={styles.statLabel}>Temps joué :</Text>
+                <Text style={styles.statValue}>{userData.timePlayed}</Text>
+            </View>
+
+            <View style={styles.statsBox}>
                 <Text style={styles.statLabel}>Meilleur Score :</Text>
-                <Text style={styles.statValue}>{bestScore}</Text>
+                <Text style={styles.statValue}>{userData.bestScore}</Text>
             </View>
 
             <View style={styles.statsBox}>
-                <Text style={styles.statLabel}>Plus de lignes :</Text>
-                <Text style={styles.statValue}>{bestLines}</Text>
+                <Text style={styles.statLabel}>Score total :</Text>
+                <Text style={styles.statValue}>{userData.totalScore}</Text>
             </View>
 
             <View style={styles.statsBox}>
-                <Text style={styles.statLabel}>Meilleur temps :</Text>
-                <Text style={styles.statValue}>{formatSeconds(bestTime)}</Text>
+                <Text style={styles.statLabel}>Succes completés :</Text>
+                <Text style={styles.statValue}>{userData.achievementComplete}</Text>
             </View>
+
+            <View style={styles.statsBox}>
+                <Text style={styles.statLabel}>Succes total :</Text>
+                <Text style={styles.statValue}>{userData.totalAchievement}</Text>
+            </View>
+
         </View>
     );
 }
