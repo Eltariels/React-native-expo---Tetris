@@ -2,7 +2,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../config';
 
-export const getLeaderboard = async () => {
+export const getProfil = async () => {
     try {
         const token = await AsyncStorage.getItem('token'); 
 
@@ -10,7 +10,7 @@ export const getLeaderboard = async () => {
             throw new Error('Token non trouvé');
         }
 
-        const response = await fetch(`${API_URL}/leaderboards/bestScore`, {
+        const response = await fetch(`${API_URL}/users/me/profil`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -23,6 +23,7 @@ export const getLeaderboard = async () => {
         }
 
         const data = await response.json();
+        console.log(data);
         
         return data;
     } catch (error) {

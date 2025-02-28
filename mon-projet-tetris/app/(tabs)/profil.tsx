@@ -1,25 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { getStats } from '../api/profil/stats';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserData } from '../api/auth/me';
+import { getProfil } from '../api/profil';
 
-export default function StatsScreen() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+export default function ProfileScreen() {
     const [userData, setUserData] = useState<any>({});
-    
-        useEffect(() => {
-            const fetchUserData = async () => {
-                try {
-                    const stats = await getStats();
+    const [username, setUsername] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const token = await AsyncStorage.getItem('token');
+                if (token) {
+                    const user = await getUserData();
+                    setUsername(user.data.username);
+                    
+                    const stats = await getProfil();
                     setUserData(stats.data);
-                } catch (error) {
-                    console.error('Erreur de récupération des données utilisateur', error);
-                } finally {
-                    setIsLoading(false);
                 }
-            };
-    
-            fetchUserData();
-        }, []);
+            } catch (error) {
+                console.error('Erreur de récupération des données utilisateur', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     if (isLoading) {
         return <Text style={styles.info}>Chargement...</Text>;
@@ -27,6 +36,7 @@ export default function StatsScreen() {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Mon pseudo : {username}</Text>
             <Text style={styles.title}>Mes Statistiques</Text>
 
             <View style={styles.statsBox}>
