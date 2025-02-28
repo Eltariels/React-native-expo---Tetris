@@ -9,7 +9,7 @@ export default function GameOverOverlay({ visible }: { visible: boolean }) {
     return (
         <View style={styles.overlay}>
             <Text style={styles.title}>Game Over</Text>
-            <Pressable style={styles.button} onPress={() => router.push('/')}>
+            <Pressable style={styles.button} onPress={() => router.back()}>
                 <Text style={styles.buttonText}>Retour au menu</Text>
             </Pressable>
         </View>

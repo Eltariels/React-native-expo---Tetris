@@ -31,13 +31,6 @@ export default function TabLayout() {
         headerShown: true,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
       }}
     >
       <Tabs.Screen
@@ -48,7 +41,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="tetris"
+        name="play"
         options={{
           title: 'Jouer',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
