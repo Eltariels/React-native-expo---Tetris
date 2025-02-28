@@ -1,8 +1,8 @@
 // /api/getUserData.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../../config';
+import { API_URL } from '../config';
 
-export const getStats = async () => {
+export const getAchievements = async () => {
     try {
         const token = await AsyncStorage.getItem('token'); 
 
@@ -10,7 +10,7 @@ export const getStats = async () => {
             throw new Error('Token non trouvé');
         }
 
-        const response = await fetch(`${API_URL}/users/me/profil`, {
+        const response = await fetch(`${API_URL}/users/me/achievements/progress`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -23,11 +23,10 @@ export const getStats = async () => {
         }
 
         const data = await response.json();
-        console.log(data);
         
         return data;
     } catch (error) {
-        console.error('Erreur de récupération des données utilisateur', error);
+        console.error('Erreur de récupération des succès utilisateur', error);
         throw error;
     }
 };
