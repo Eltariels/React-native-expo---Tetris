@@ -7,13 +7,11 @@ import { AuthProvider } from '@/context/AuthContext';
 export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <TetrisProvider>
         <AuthProvider>
           <View style={{ flex: 1, backgroundColor: '#000' }}>
             <Slot />
           </View>
         </AuthProvider>
-      </TetrisProvider>
     </GestureHandlerRootView>
   );
 }
