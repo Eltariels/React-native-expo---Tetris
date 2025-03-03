@@ -1,99 +1,102 @@
-// components/VirtualJoystick.tsx
 import React from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, {
-    useAnimatedGestureHandler,
-    useSharedValue,
-    useAnimatedStyle,
-    runOnJS,
-} from 'react-native-reanimated';
-import { useTetris } from '@/context/TetrisContext';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, { useSharedValue, useAnimatedStyle, withSpring } from 'react-native-reanimated';
+import { useTetrisGame } from '@/context/TestGameContext';
 
 const JOYSTICK_RADIUS = 50; // Rayon du joystick (base)
 const KNOB_RADIUS = 20; // Rayon du knob
-const MOVE_THRESHOLD = 20; // Chaque 20 px, on déclenche un déplacement
+const MOVE_THRESHOLD = 40; // Chaque 20 px, on déclenche un déplacement
 
 const { width } = Dimensions.get('window');
 
 export default function VirtualJoystick() {
-    const { moveLeft, moveRight, softDrop } = useTetris();
+  const { game } = useTetrisGame();
 
-    // Valeurs partagées pour le déplacement du knob
-    const translationX = useSharedValue(0);
-    const translationY = useSharedValue(0);
+  const translationX = useSharedValue(0);
+  const translationY = useSharedValue(0);
+  const lastMoveX = useSharedValue(0);
+  const lastMoveY = useSharedValue(0);
 
-    // Utiliser un contexte (ctx) pour stocker la dernière position franchie
-    const gestureHandler = useAnimatedGestureHandler({
-        onStart: (_, ctx: any) => {
-            ctx.prevX = 0;
-            ctx.prevY = 0;
-        },
-        onActive: (event, ctx: any) => {
-            // Calculer le delta depuis la dernière étape enregistrée
-            const dx = event.translationX - ctx.prevX;
-            const dy = event.translationY - ctx.prevY;
+  const joystickGesture = Gesture.Pan()
+    .runOnJS(true)
+    .onBegin(() => {
+      translationX.value = 0;
+      translationY.value = 0;
+      lastMoveX.value = 0;
+      lastMoveY.value = 0;
+    })
+    .onUpdate((event) => {
+      let newTranslationX = event.translationX;
+      let newTranslationY = event.translationY;
 
-            // Pour les mouvements horizontaux
-            if (dx <= -MOVE_THRESHOLD) {
-                runOnJS(moveLeft)();
-                ctx.prevX -= MOVE_THRESHOLD;
-            } else if (dx >= MOVE_THRESHOLD) {
-                runOnJS(moveRight)();
-                ctx.prevX += MOVE_THRESHOLD;
-            }
+      // Calculer la distance entre le centre du joystick et la position actuelle du knob
+      const distance = Math.sqrt(newTranslationX ** 2 + newTranslationY ** 2);
 
-            // Pour le mouvement vertical (vers le bas pour descendre)
-            if (dy >= MOVE_THRESHOLD) {
-                runOnJS(softDrop)();
-                ctx.prevY += MOVE_THRESHOLD;
-            }
-            // Tu peux ajouter ici un swipe vertical vers le haut si souhaité (ex: rotation)
-        },
-        onEnd: () => {
-            // Réinitialise le knob au centre quand le geste se termine
-            translationX.value = 0;
-            translationY.value = 0;
-        },
+      // Si la distance dépasse le rayon du joystick, on limite les translations
+      if (distance > JOYSTICK_RADIUS - KNOB_RADIUS) {
+        const angle = Math.atan2(newTranslationY, newTranslationX);
+        newTranslationX = (JOYSTICK_RADIUS - KNOB_RADIUS) * Math.cos(angle);
+        newTranslationY = (JOYSTICK_RADIUS - KNOB_RADIUS) * Math.sin(angle);
+      }
+
+      translationX.value = newTranslationX;
+      translationY.value = newTranslationY;
+
+      if (game) {
+        if (event.translationX - lastMoveX.value <= -MOVE_THRESHOLD) {
+          game.moveLeft();
+          lastMoveX.value = event.translationX;
+        } else if (event.translationX - lastMoveX.value >= MOVE_THRESHOLD) {
+          game.moveRight();
+          lastMoveX.value = event.translationX;
+        }
+
+        if (event.translationY - lastMoveY.value >= MOVE_THRESHOLD) {
+          game.softDrop();
+          lastMoveY.value = event.translationY;
+        }
+      }
+    })
+    .onFinalize(() => {
+      translationX.value = withSpring(0);
+      translationY.value = withSpring(0);
     });
 
-    const knobStyle = useAnimatedStyle(() => ({
-        transform: [
-            { translateX: translationX.value },
-            { translateY: translationY.value },
-        ],
-    }));
+  const knobStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: withSpring(translationX.value) }, { translateY: withSpring(translationY.value) }],
+  }));
 
-    return (
-        <PanGestureHandler onGestureEvent={gestureHandler}>
-            <Animated.View style={styles.container}>
-                <Animated.View style={styles.joystickBase} />
-                <Animated.View style={[styles.knob, knobStyle]} />
-            </Animated.View>
-        </PanGestureHandler>
-    );
+  return (
+    <GestureDetector gesture={joystickGesture}>
+      <Animated.View style={styles.container}>
+        <Animated.View style={styles.joystickBase} />
+        <Animated.View style={[styles.knob, knobStyle]} />
+      </Animated.View>
+    </GestureDetector>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        width: JOYSTICK_RADIUS * 2,
-        height: JOYSTICK_RADIUS * 2,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    joystickBase: {
-        position: 'absolute',
-        width: JOYSTICK_RADIUS * 2,
-        height: JOYSTICK_RADIUS * 2,
-        borderRadius: JOYSTICK_RADIUS,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        borderWidth: 2,
-        borderColor: '#fff',
-    },
-    knob: {
-        width: KNOB_RADIUS * 2,
-        height: KNOB_RADIUS * 2,
-        borderRadius: KNOB_RADIUS,
-        backgroundColor: '#fff',
-    },
+  container: {
+    width: JOYSTICK_RADIUS * 2,
+    height: JOYSTICK_RADIUS * 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  joystickBase: {
+    position: 'absolute',
+    width: JOYSTICK_RADIUS * 2,
+    height: JOYSTICK_RADIUS * 2,
+    borderRadius: JOYSTICK_RADIUS,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+  knob: {
+    width: KNOB_RADIUS * 2,
+    height: KNOB_RADIUS * 2,
+    borderRadius: KNOB_RADIUS,
+    backgroundColor: '#fff',
+  },
 });

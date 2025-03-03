@@ -1,16 +1,17 @@
 // components/GameFooter.tsx (exemple)
 import React from 'react';
 import { View, Pressable, Text, StyleSheet } from 'react-native';
-import { useTetris } from '@/context/TetrisContext';
 import { useRouter } from 'expo-router';
+import { useTetrisGame } from '@/context/TestGameContext';
 
-export default function GameFooter({ isMultiplayer }: { isMultiplayer: boolean }) {
-  const { togglePause, handleQuitGame } = useTetris();
+export default function GameFooter() {
+  const { game } = useTetrisGame();
+
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Pressable style={styles.button} onPress={togglePause}>
+      <Pressable style={styles.button} onPress={() => game.togglePause()}>
         <Text style={styles.btnText}>Pause</Text>
       </Pressable>
 
@@ -18,7 +19,7 @@ export default function GameFooter({ isMultiplayer }: { isMultiplayer: boolean }
         style={styles.button}
         onPress={() => {
           router.back();
-          handleQuitGame(isMultiplayer ? 'multiplayer' : 'singleplayer');
+          game.quitGame();
         }}
       >
         <Text style={styles.btnText}>Quitter</Text>
