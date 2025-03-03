@@ -6,13 +6,15 @@ interface ScoreBoardProps {
   score: number;
   lines: number;
   isMultiplayer: boolean;
+  duration: number;
   otherPlayerScore?: number;
 }
 
-export default function ScoreBoard({ score, lines, isMultiplayer, otherPlayerScore }: ScoreBoardProps) {
+export default function ScoreBoard({ score, lines, isMultiplayer, duration, otherPlayerScore }: ScoreBoardProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Score: {score}</Text>
+      <Text style={styles.text}>Temps: {duration}</Text>
       {isMultiplayer && <Text style={styles.text}>Score adversaire: {otherPlayerScore}</Text>}
       <Text style={styles.text}>Lignes: {lines}</Text>
     </View>

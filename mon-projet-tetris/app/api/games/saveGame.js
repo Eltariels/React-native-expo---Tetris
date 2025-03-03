@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '../../config';
 
-export const saveGameScore = async (finalScore, finalLines, playTime) => {
+export const saveGameScore = async (finalScore, finalLines, playTime, duelId) => {
     try {
         const token = await AsyncStorage.getItem('token');
 
@@ -19,6 +19,7 @@ export const saveGameScore = async (finalScore, finalLines, playTime) => {
                 score: finalScore,
                 lines_cleared: finalLines,
                 duration: playTime,
+                duelId: duelId
             }),
         });
 

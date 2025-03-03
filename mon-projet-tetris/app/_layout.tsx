@@ -1,6 +1,5 @@
 import { Slot } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { TetrisProvider } from '@/context/TetrisContext';
 import { View } from 'react-native';
 import { AuthProvider } from '@/context/AuthContext';
 

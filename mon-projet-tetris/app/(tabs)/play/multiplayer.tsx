@@ -1,6 +1,5 @@
-import TetrisGame from '@/components/tetris/TetrisGame';
+import TetrisGameComponent from '@/components/tetris/TetrisGameComponent';
 import { useAuth } from '@/context/AuthContext';
-import { useTetris } from '@/context/TetrisContext';
 import { useSocket } from '@/hooks/useSocket';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -11,22 +10,27 @@ const Multiplayer = () => {
   const router = useRouter();
   const [hasFindMatch, setHasFindMatch] = useState(false);
   const [otherPlayerScore, setOtherPlayerScore] = useState(0);
+  const [seed, setSeed] = useState<null | number>(null);
+  const [duelId, setDuelId] = useState<null | string>(null);
 
-  const { score, handleGameSeed } = useTetris();
   const { socket, hasConnection, hasError } = useSocket();
   useEffect(() => {
     if (!socket) return;
     socket.emit('joinQueue', { userId: currentUser?.id });
 
     socket.on('matchFound', (data) => {
-      handleGameSeed(data.seed);
+      setSeed(data.seed);
+      setDuelId(data.duelId);
       setHasFindMatch(true);
     });
+
     socket.on('playerLeft', (data) => {
       console.log('player left');
     });
     socket.on('playerReconnected', (data) => {
       console.log('player reconnected');
+      setSeed(data.seed);
+      setDuelId(data.duelId);
       setHasFindMatch(true);
     });
 
@@ -38,11 +42,11 @@ const Multiplayer = () => {
     });
   }, [socket]);
 
-  useEffect(() => {
-    if (socket && score !== null) {
-      socket.emit('scoreUpdate', { userId: currentUser?.id, score });
-    }
-  }, [score, socket]);
+  // useEffect(() => {
+  //   if (socket && score !== null) {
+  //     socket.emit('scoreUpdate', { userId: currentUser?.id, score });
+  //   }
+  // }, [score, socket]);
 
   if (hasError) {
     return (
@@ -89,7 +93,7 @@ const Multiplayer = () => {
     );
   }
 
-  return <TetrisGame isMultiplayer otherPlayerScore={otherPlayerScore} />;
+  return seed && duelId && <TetrisGameComponent isMultiplayer otherPlayerScore={otherPlayerScore} seed={seed} duelId={duelId} />;
 };
 
 export default Multiplayer;
