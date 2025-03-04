@@ -36,9 +36,11 @@ export default function LeaderboardScreen() {
             <ScrollView style={styles.list}>
                 {leaderboard.map((game, index) => (
                     <View key={index} style={styles.statsBox}>
-                        <Text style={styles.statLabel}>top {index + 1} :</Text>
-                        <Text style={styles.statValue}>Score : {game.best_score}</Text>
-                        <Text style={styles.statValue}>Joueur : {game.player.username}</Text>
+                        <View style={styles.statsRow}>
+                            <Text style={styles.position}>{index + 1}</Text>
+                            <Text style={styles.username}>{game.player.username}</Text>
+                            <Text style={styles.score}>{game.best_score}</Text>
+                        </View>
                     </View>
                 ))}
             </ScrollView>
@@ -64,16 +66,31 @@ const styles = StyleSheet.create({
         backgroundColor: '#333',
         padding: 15,
         borderRadius: 10,
-        width: '80%',
+        width: '100%',
     },
-    statLabel: {
+    statsRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    position: {
         color: '#ccc',
         fontSize: 16,
+        fontWeight: 'bold',
+        width: '10%',
     },
-    statValue: {
+    username: {
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold',
+        width: '70%',
+    },
+    score: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        width: '20%',
+        textAlign: 'right',
     },
     info: {
         color: '#fff',

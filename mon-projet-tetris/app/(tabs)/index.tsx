@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet, ImageBackground} from 'react-native';
-import {getUserData} from '../api/auth/me';
-import {useRouter} from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native';
+import { getUserData } from '../api/auth/me';
+import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Audio } from 'expo-av';
-import HomeFooter from '../../components/HomeFooter';
 
 export default function HomeScreen() {
     const [username, setUsername] = useState<string | null>(null);
@@ -73,27 +72,40 @@ export default function HomeScreen() {
         <ImageBackground source={require('../../assets/images/background.jpg')} style={styles.container}>
             <View style={styles.content}>
                 <View style={styles.titleContainer}>
-                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, {color: '#FF0'}]}>T</Text>
-                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, {color: '#00ffff'}]}>E</Text>
-                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, {color: '#F00'}]}>T</Text>
-                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, {color: '#0F0'}]}>R</Text>
-                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, {color: '#F70'}]}>I</Text>
-                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, {color: '#A0F'}]}>S</Text>
+                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, { color: '#FF0' }]}>T</Text>
+                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, { color: '#00ffff' }]}>E</Text>
+                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, { color: '#F00' }]}>T</Text>
+                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, { color: '#0F0' }]}>R</Text>
+                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, { color: '#F70' }]}>I</Text>
+                    <Text style={[styles.letter, styles.letterShadow, styles.letterBold, { color: '#A0F' }]}>S</Text>
                 </View>
                 <Text style={styles.subtitle}>Bienvenue sur le jeu du tetris {username || 'Utilisateur'} !</Text>
 
                 <View style={styles.buttonContainer}>
-                    <Button title="Partie solo" color="#0000FF" onPress={() => router.push('/solo')} />
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#4294FF' }]}
+                        onPress={() => router.push('/play/singleplayer')}
+                    >
+                        <Text style={styles.buttonText}>Partie solo</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button title="Partie multijoueur" color="#00FF00" onPress={() => router.push('/multijoueur')} />
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#FFA443' }]}
+                        onPress={() => router.push('/play/multiplayer')}
+                    >
+                        <Text style={styles.buttonText}>Partie multijoueur</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <Button title="Déconnexion" color="#FF0000" onPress={handleLogout} />
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: '#FF4242' }]}
+                        onPress={handleLogout}
+                    >
+                        <Text style={styles.buttonText}>Déconnexion</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
-
-            {/*<HomeFooter/>*/} {/*a remettre pour foutre l'ancien footer*/}
         </ImageBackground>
     );
 }
@@ -146,5 +158,17 @@ const styles = StyleSheet.create({
         width: 200,
         marginBottom: 12,
         alignSelf: 'center',
-    }
+    },
+    button: {
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });

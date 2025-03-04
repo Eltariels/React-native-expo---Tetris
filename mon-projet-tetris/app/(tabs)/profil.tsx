@@ -36,8 +36,7 @@ export default function ProfileScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Mon pseudo : {username}</Text>
-            <Text style={styles.title}>Mes Statistiques</Text>
+            <Text style={styles.title}>{username}</Text>
 
             <View style={styles.statsBox}>
                 <Text style={styles.statLabel}>Parties jouées :</Text>
@@ -60,7 +59,7 @@ export default function ProfileScreen() {
             </View>
 
             <View style={styles.statsBox}>
-                <Text style={styles.statLabel}>Succes completés :</Text>
+                <Text style={styles.statLabel}>Succes complétés :</Text>
                 <Text style={styles.statValue}>{userData.achievementComplete}</Text>
             </View>
 
@@ -78,20 +77,21 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#1A1A1A',
         paddingTop: 60,
-        alignItems: 'center',
+        paddingHorizontal: 20,
     },
     title: {
         color: '#fff',
         fontSize: 24,
         marginBottom: 30,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     statsBox: {
         marginBottom: 20,
         backgroundColor: '#333',
         padding: 15,
         borderRadius: 10,
-        width: '80%',
+        width: '100%',
     },
     statLabel: {
         color: '#ccc',
@@ -105,5 +105,6 @@ const styles = StyleSheet.create({
     info: {
         color: '#fff',
         fontSize: 16,
+        textAlign: 'center',
     },
 });

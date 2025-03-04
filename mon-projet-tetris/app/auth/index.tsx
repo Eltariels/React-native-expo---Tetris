@@ -4,20 +4,26 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
 import { login } from '../api/auth/login';
+import { useAuth } from '../../context/AuthContext';
 
 export default function LoginScreen() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const { signIn, isLoggedIn } = useAuth();
     const router = useRouter();
 
     async function handleLogin() {
         try {
-            const data = await login(username, password); 
-            await AsyncStorage.setItem('token', data.data.access_token);
+            await signIn({ username, password });
             router.push('/');
         } catch (error) {
             alert('Erreur de connexion, veuillez réessayer.');
         }
+    }
+
+    if (isLoggedIn) {
+        router.push('/');
+        return null;
     }
 
     return (
@@ -45,7 +51,6 @@ export default function LoginScreen() {
             <Link href="/auth/register" style={styles.link}>
                 Pas de compte ? S’inscrire
             </Link>
-
         </View>
     );
 }

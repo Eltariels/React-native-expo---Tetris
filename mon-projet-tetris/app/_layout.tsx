@@ -4,6 +4,9 @@ import { View } from 'react-native';
 import { AuthProvider } from '@/context/AuthContext';
 
 export default function Layout() {
+  // if (__DEV__) {
+  //   console.error = () => {};
+  // }
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <AuthProvider>

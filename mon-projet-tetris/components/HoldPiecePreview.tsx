@@ -11,10 +11,10 @@ interface HoldPiecePreviewProps {
 export default function HoldPiecePreview({ piece }: HoldPiecePreviewProps) {
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Hold :</Text>
+            <Text style={styles.label}>Hold</Text>
             <View style={styles.previewArea}>
                 {piece ? (
-                    <TetrisPiece piece={{ ...piece, row: 0, col: 0 }} scale={0.5} />
+                    <TetrisPiece piece={{ ...piece, row: -1, col: -1.5 }} scale={0.8} />
                 ) : (
                     <Text style={{ color: '#777' }}>Vide</Text>
                 )}
@@ -40,5 +40,8 @@ const styles = StyleSheet.create({
         position: 'relative',
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: '#fff',
+        borderRadius: 10,
     },
 });

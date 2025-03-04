@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { getAchievements } from '../api/achievements'; // Assure-toi que cette fonction existe
+import { getAchievements } from '../api/achievements';
 
 export default function AchievementsScreen() {
     const [achievements, setAchievements] = useState<any[]>([]);
@@ -10,7 +10,7 @@ export default function AchievementsScreen() {
         const fetchAchievements = async () => {
             try {
                 const response = await getAchievements();
-                setAchievements(response.data);  // Assure-toi que 'data' contient la liste des achievements
+                setAchievements(response.data);
             } catch (error) {
                 console.error('Erreur de récupération des achievements', error);
             } finally {
@@ -27,16 +27,36 @@ export default function AchievementsScreen() {
 
     return (
         <ScrollView style={styles.container}>
-            <Text style={styles.title}>Mes Achievements</Text>
-            {achievements.map((achievement) => (
-                <View key={achievement.id} style={styles.achievementBox}>
-                    <Text style={styles.achievementName}>{achievement.name}</Text>
-                    <Text style={styles.achievementDescription}>{achievement.description}</Text>
-                    <Text style={styles.achievementStatus}>
-                        {achievement.unlocked ? 'Débloqué' : 'Non débloqué'}
-                    </Text>
-                </View>
-            ))}
+            <Text style={styles.title}>Mes Succès</Text>
+            {achievements.map((achievement) => {
+                const progress = Math.min(achievement.progress, achievement.required);
+                return (
+                    <View key={achievement.id} style={styles.achievementBox}>
+                        <Text style={styles.achievementName}>{achievement.name}</Text>
+                        <Text style={styles.achievementDescription}>{achievement.description}</Text>
+
+                        <View style={styles.progressContainer}>
+                            <Text
+                                style={[
+                                    styles.progressText,
+                                    achievement.unlocked ? { color: '#4caf50' } : { color: '#f44336' },
+                                ]}
+                            >
+                                {progress} / {achievement.required}
+                            </Text>
+                            <View style={[styles.progressBar, achievement.unlocked && { backgroundColor: '#4caf50' }]}>
+                                <View
+                                    style={[
+                                        styles.progressFill,
+                                        { width: `${(progress / achievement.required) * 100}%` },
+                                        achievement.unlocked ? { backgroundColor: '#4caf50' } : { backgroundColor: '#f44336' },
+                                    ]}
+                                />
+                            </View>
+                        </View>
+                    </View>
+                );
+            })}
         </ScrollView>
     );
 }
@@ -53,6 +73,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         marginBottom: 30,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     achievementBox: {
         backgroundColor: '#333',
@@ -70,10 +91,28 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     achievementStatus: {
-        color: '#4caf50',  // Vert pour débloqué
         fontSize: 16,
         fontWeight: 'bold',
         marginTop: 10,
+    },
+    progressContainer: {
+        marginVertical: 10,
+    },
+    progressText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    progressBar: {
+        height: 10,
+        width: '100%',
+        backgroundColor: '#ccc',
+        borderRadius: 5,
+        marginTop: 5,
+    },
+    progressFill: {
+        height: '100%',
+        borderRadius: 5,
     },
     info: {
         color: '#fff',

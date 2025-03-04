@@ -1,18 +1,18 @@
-// components/GameFooter.tsx (exemple)
+// components/GameFooter.tsx
 import React from 'react';
-import { View, Pressable, Text, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTetrisGame } from '@/context/TestGameContext';
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function GameFooter() {
   const { game } = useTetrisGame();
-
   const router = useRouter();
 
   return (
     <View style={styles.container}>
       <Pressable style={styles.button} onPress={() => game.togglePause()}>
-        <Text style={styles.btnText}>Pause</Text>
+        <FontAwesome name="pause" size={24} color="#fff" />
       </Pressable>
 
       <Pressable
@@ -22,7 +22,7 @@ export default function GameFooter() {
           game.quitGame();
         }}
       >
-        <Text style={styles.btnText}>Quitter</Text>
+        <FontAwesome name="power-off" size={24} color="#fff" />
       </Pressable>
     </View>
   );
@@ -31,21 +31,16 @@ export default function GameFooter() {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    // Espace horizontal
-    justifyContent: 'space-around',
-    // Ou un padding plus grand
-    padding: 20,
-    backgroundColor: '#222',
+    justifyContent: 'flex-start',
+    width: '100%',
+    paddingHorizontal: 20,
   },
   button: {
     backgroundColor: '#555',
-    paddingHorizontal: 30,
-    paddingVertical: 10,
+    padding: 10,
     borderRadius: 8,
-    marginHorizontal: 20, // Espace autour du bouton
-  },
-  btnText: {
-    color: '#fff',
-    fontSize: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 20,
   },
 });
