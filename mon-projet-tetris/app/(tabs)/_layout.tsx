@@ -49,7 +49,7 @@ export default function TabLayout() {
                     tabBarShowLabel: false,
                     tabBarIcon: () => (
                         <Image
-                            source={require('../../assets/images/list.jpg')}
+                            source={require('../../assets/images/list.png')}
                             style={{width: 32, height: 32, padding: 10}} // Ajustement de la taille et couleur
                         />
                     ),
@@ -62,7 +62,7 @@ export default function TabLayout() {
                     tabBarShowLabel: false,
                     tabBarIcon: () => (
                         <Image
-                            source={require('../../assets/images/user.jpg')}
+                            source={require('../../assets/images/user.png')}
                             style={{width: 32, height: 32, padding: 10}} // Ajustement de la taille et couleur
                         />
                     ),
@@ -75,7 +75,7 @@ export default function TabLayout() {
                     tabBarShowLabel: false,
                     tabBarIcon: () => (
                         <Image
-                            source={require('../../assets/images/stats.jpg')}
+                            source={require('../../assets/images/stats.png')}
                             style={{width: 32, height: 32, padding: 10}} // Ajustement de la taille et couleur
                         />
                     ),
