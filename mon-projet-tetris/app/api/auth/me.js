@@ -4,10 +4,10 @@ import { API_URL } from '../../config';
 
 export const getUserData = async () => {
     try {
-        const token = await AsyncStorage.getItem('token'); 
+        const token = await AsyncStorage.getItem('token');
 
         if (!token) {
-            throw new Error('Token non trouvé');
+            return null;
         }
 
         const response = await fetch(`${API_URL}/authentification/me`, {
@@ -18,7 +18,7 @@ export const getUserData = async () => {
         });
 
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.message || 'Une erreur est survenue');
         }
@@ -26,6 +26,7 @@ export const getUserData = async () => {
         return data;
     } catch (error) {
         console.error('Erreur de récupération des données utilisateur', error);
-        throw error;
+        return null;
     }
 };
+

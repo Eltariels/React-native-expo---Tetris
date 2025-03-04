@@ -150,9 +150,13 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
     },
     subtitle: {
-        fontSize: 17,
+        fontSize: 22,
+        textShadowColor: 'rgba(0, 0, 0, 0.8)',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 6,
         color: '#fff',
         marginBottom: 12,
+        fontWeight: 'bold',
     },
     buttonContainer: {
         width: 200,
