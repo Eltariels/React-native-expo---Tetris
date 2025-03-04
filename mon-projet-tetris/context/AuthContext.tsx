@@ -1,6 +1,6 @@
 import { API_URL } from '@/app/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useCallback, useContext, useState } from 'react';
+import { createContext, useCallback, useContext, useState, useEffect } from 'react';
 export type User = {
   id: string;
   username: string;
@@ -88,6 +88,18 @@ export function AuthProvider(props: React.PropsWithChildren) {
       console.log(err);
       setIsLoggedIn(false);
     }
+  }, []);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        await verifyLogin();
+      } catch (err) {
+        setIsLoggedIn(false);
+      }
+    };
+  
+    checkLoginStatus();
   }, []);
 
   return (

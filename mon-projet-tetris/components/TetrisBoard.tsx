@@ -55,6 +55,8 @@ function getCellColor(value: number): string {
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
+        borderWidth: 2,
+        borderColor: '#fff',
     },
     grid: {
         position: 'relative',

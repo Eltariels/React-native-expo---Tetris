@@ -13,21 +13,38 @@ interface ScoreBoardProps {
 export default function ScoreBoard({ score, lines, isMultiplayer, duration, otherPlayerScore }: ScoreBoardProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Score: {score}</Text>
-      <Text style={styles.text}>Temps: {duration}</Text>
+      <View style={styles.scoreContainer}>
+        <Text style={styles.smallText}>Score</Text>
+        <Text style={styles.scoreText}>{score}</Text>
+      </View>
+        <Text style={styles.smallText}>Lignes {lines}</Text>
+        <Text style={styles.smallText}>Temps {duration}</Text>
+      
       {isMultiplayer && <Text style={styles.text}>Score adversaire: {otherPlayerScore}</Text>}
-      <Text style={styles.text}>Lignes: {lines}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 20,
     marginBottom: 10,
     alignItems: 'center',
   },
   text: {
     color: '#fff',
     fontSize: 16,
+  },
+  smallText: {
+    color: '#ccc',
+    fontSize: 14,
+  },
+  scoreContainer: {
+    alignItems: 'center',
+  },
+  scoreText: {
+    color: '#fff',
+    fontSize: 32,
+    fontWeight: 'bold',
   },
 });
