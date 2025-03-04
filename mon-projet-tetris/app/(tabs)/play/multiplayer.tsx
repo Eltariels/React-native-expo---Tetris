@@ -72,7 +72,7 @@ const Multiplayer = () => {
       <View style={styles.container}>
         <Text style={styles.statusText}>Recherche d'une partie...</Text>
         <ActivityIndicator size="large" color="#ffffff" />
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.back()}>
           <Text style={styles.buttonText}>Annuler</Text>
         </TouchableOpacity>
       </View>

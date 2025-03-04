@@ -44,22 +44,32 @@ export function AuthProvider(props: React.PropsWithChildren) {
   const [currentUser, setCurrentUser] = useState(null);
   const login = async (credential: Credential) => {
     try {
-      const response = await fetch(`${API_URL}/authentification/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credential),
-      });
+        const response = await fetch(`${API_URL}/authentification/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(credential),
+        });
 
-      const data = await response.json();
-      await AsyncStorage.setItem('token', data.data.access_token);
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Identifiants incorrects');
+        }
+
+        if (!data.data || !data.data.access_token) {
+            throw new Error('Réponse invalide du serveur');
+        }
+
+        await AsyncStorage.setItem('token', data.data.access_token);
+        setIsLoggedIn(true);
     } catch (error) {
-      console.error('Erreur de login', error);
-      throw error;
+        console.warn('Erreur de login', error);
+        throw error;
     }
-    setIsLoggedIn(true);
-  };
+};
+
 
   const getCurrentUser = async () => {
     const token = await AsyncStorage.getItem('token');

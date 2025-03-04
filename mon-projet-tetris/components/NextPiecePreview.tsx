@@ -10,11 +10,33 @@ interface NextPiecePreviewProps {
 }
 
 export default function NextPiecePreview({ piece }: NextPiecePreviewProps) {
+    let row = -1;
+    let col = -1.5;
+
+    if (JSON.stringify(piece.shape) === JSON.stringify([[1], [1], [1], [1]])) {
+        row = -2;
+        col = -0.5;
+    }
+    else if (JSON.stringify(piece.shape) === JSON.stringify([[2, 2], [2, 2]])) {
+        row = -1;
+        col = -1;
+    }
+    else if (JSON.stringify(piece.shape) === JSON.stringify([[4, 0, 0], [4, 0, 0], [4, 4, 0]])) {
+        row = -1.5;
+        col = -1;
+    }
+
+    const adjustedPiece = {
+        ...piece,
+        row,
+        col,
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Suivante</Text>
             <View style={styles.previewArea}>
-                <TetrisPiece piece={{ ...piece, row: -1, col: -1.5 }} scale={0.8} />
+                <TetrisPiece piece={adjustedPiece} scale={0.8} />
             </View>
         </View>
     );

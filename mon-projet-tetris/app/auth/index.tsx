@@ -1,9 +1,6 @@
-// app/auth/index.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Link, useRouter } from 'expo-router';
-import { login } from '../api/auth/login';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginScreen() {
@@ -21,8 +18,13 @@ export default function LoginScreen() {
         }
     }
 
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push('/');
+        }
+    }, [isLoggedIn, router]);
+
     if (isLoggedIn) {
-        router.push('/');
         return null;
     }
 
