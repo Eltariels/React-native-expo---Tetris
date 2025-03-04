@@ -18,7 +18,7 @@ export default function GameFooter() {
       <Pressable
         style={styles.button}
         onPress={() => {
-          router.back();
+          router.replace('/');
           game.quitGame();
         }}
       >

@@ -92,7 +92,7 @@ export default function HomeScreen() {
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: '#FFA443' }]}
-                        onPress={() => router.push('/play/multiplayer')}
+                        onPress={() => router.replace('/play/multiplayer')}
                     >
                         <Text style={styles.buttonText}>Partie multijoueur</Text>
                     </TouchableOpacity>

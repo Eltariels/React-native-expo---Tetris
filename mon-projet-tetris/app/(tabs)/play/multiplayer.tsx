@@ -1,8 +1,9 @@
 import TetrisGameComponent from '@/components/tetris/TetrisGameComponent';
 import { useAuth } from '@/context/AuthContext';
+import { useTetrisGame } from '@/context/TestGameContext';
 import { useSocket } from '@/hooks/useSocket';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const Multiplayer = () => {
@@ -14,35 +15,43 @@ const Multiplayer = () => {
   const [duelId, setDuelId] = useState<null | string>(null);
 
   const { socket, hasConnection, hasError } = useSocket();
+  const { game } = useTetrisGame();
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!socket) return;
+      socket.emit('joinQueue', { userId: currentUser?.id });
+
+      socket.on('matchFound', (data) => {
+        setSeed(data.seed);
+        setDuelId(data.duelId);
+        setHasFindMatch(true);
+      });
+
+      socket.on('playerLeft', () => {
+        console.log('player left');
+      });
+
+      socket.on('playerReconnected', (data) => {
+        console.log('player reconnected');
+        setSeed(data.seed);
+        setDuelId(data.duelId);
+        setHasFindMatch(true);
+      });
+
+      socket.on('liveScoreUpdate', (data: { userId: string; score: number }[]) => {
+        const otherPlayer = data.find((player) => player.userId !== currentUser?.id);
+        if (otherPlayer) {
+          setOtherPlayerScore(otherPlayer.score);
+        }
+      });
+    }, [socket])
+  );
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit('joinQueue', { userId: currentUser?.id });
-
-    socket.on('matchFound', (data) => {
-      setSeed(data.seed);
-      setDuelId(data.duelId);
-      setHasFindMatch(true);
-    });
-
-    socket.on('playerLeft', () => {
-      console.log('player left');
-    });
-
-    socket.on('playerReconnected', (data) => {
-      console.log('player reconnected');
-      setSeed(data.seed);
-      setDuelId(data.duelId);
-      setHasFindMatch(true);
-    });
-
-    socket.on('liveScoreUpdate', (data: { userId: string; score: number }[]) => {
-      const otherPlayer = data.find((player) => player.userId !== currentUser?.id);
-      if (otherPlayer) {
-        setOtherPlayerScore(otherPlayer.score);
-      }
-    });
-  }, [socket]);
+    socket.emit('scoreUpdate', { userId: currentUser?.id, score: game.getScore() });
+  }, [game.getScore(), socket]);
 
   if (hasError) {
     return (
@@ -72,20 +81,16 @@ const Multiplayer = () => {
       <View style={styles.container}>
         <Text style={styles.statusText}>Recherche d'une partie...</Text>
         <ActivityIndicator size="large" color="#ffffff" />
-        <TouchableOpacity style={styles.button} onPress={() => router.push('/')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.replace('/')}>
           <Text style={styles.buttonText}>Annuler</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  return seed && duelId && (
-    <TetrisGameComponent
-      isMultiplayer
-      otherPlayerScore={otherPlayerScore}
-      seed={seed}
-      duelId={duelId}
-    />
+  return (
+    seed &&
+    duelId && <TetrisGameComponent isMultiplayer otherPlayerScore={otherPlayerScore} seed={seed} duelId={duelId} />
   );
 };
 

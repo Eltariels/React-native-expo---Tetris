@@ -196,6 +196,10 @@ export class TetrisGame {
     };
   }
 
+  getScore() {
+    return this.score;
+  }
+
   async handleGameOver() {
     this.gameOver = true;
     try {
