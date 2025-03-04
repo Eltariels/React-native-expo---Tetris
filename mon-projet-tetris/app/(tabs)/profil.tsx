@@ -34,6 +34,13 @@ export default function ProfileScreen() {
         return <Text style={styles.info}>Chargement...</Text>;
     }
 
+    const formatTime = (seconds: number) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours}h ${minutes}m ${secs}s`;
+    };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{username}</Text>
@@ -45,7 +52,7 @@ export default function ProfileScreen() {
 
             <View style={styles.statsBox}>
                 <Text style={styles.statLabel}>Temps joué :</Text>
-                <Text style={styles.statValue}>{userData.timePlayed}</Text>
+                <Text style={styles.statValue}>{formatTime(userData.timePlayed)}</Text>
             </View>
 
             <View style={styles.statsBox}>
