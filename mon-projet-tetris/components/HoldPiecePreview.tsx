@@ -9,12 +9,35 @@ interface HoldPiecePreviewProps {
 }
 
 export default function HoldPiecePreview({ piece }: HoldPiecePreviewProps) {
+    let row = -1;
+    let col = -1.5;
+    if (piece){
+        if (JSON.stringify(piece.shape) === JSON.stringify([[1], [1], [1], [1]])) {
+            row = -2;
+            col = -0.5;
+        }
+        else if (JSON.stringify(piece.shape) === JSON.stringify([[2, 2], [2, 2]])) {
+            row = -1;
+            col = -1;
+        }
+        else if (JSON.stringify(piece.shape) === JSON.stringify([[4, 0, 0], [4, 0, 0], [4, 4, 0]])) {
+            row = -1.5;
+            col = -1;
+        }
+    }
+
+    const adjustedPiece = {
+        ...piece,
+        row,
+        col,
+    };
+    
     return (
         <View style={styles.container}>
             <Text style={styles.label}>Hold</Text>
             <View style={styles.previewArea}>
                 {piece ? (
-                    <TetrisPiece piece={{ ...piece, row: -1, col: -1.5 }} scale={0.8} />
+                    <TetrisPiece piece={adjustedPiece} scale={0.8} />
                 ) : (
                     <Text style={{ color: '#777' }}>Vide</Text>
                 )}

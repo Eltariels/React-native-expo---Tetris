@@ -1,6 +1,7 @@
 import { SOCKET_URL } from '@/app/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect, useRef, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 export const useSocket = () => {
@@ -38,16 +39,18 @@ export const useSocket = () => {
     socketRef.current = socketInstance;
   };
 
-  useEffect(() => {
-    connectSocket();
-    return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current.removeAllListeners();
-        socketRef.current = null;
-      }
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      connectSocket();
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+          socketRef.current.removeAllListeners();
+          socketRef.current = null;
+        }
+      };
+    }, [])
+  );
 
   return { socket: socketRef.current, hasConnection, hasError };
 };

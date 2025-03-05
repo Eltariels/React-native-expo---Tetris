@@ -18,11 +18,18 @@ export default function TabLayout() {
         verifyLogin();
     }, []);
 
+    useEffect(() => {
+        verifyLogin();
+    }, []);
+    
+    useEffect(() => {
+        if (isLoggedIn === false) {
+            router.replace('/auth');
+        }
+    }, [isLoggedIn]);
+    
     if (isLoggedIn === null) return <Text>Loading...</Text>;
-
-    if (isLoggedIn === false) {
-        router.replace('/auth');
-    }
+    
 
     return (
         <Tabs
