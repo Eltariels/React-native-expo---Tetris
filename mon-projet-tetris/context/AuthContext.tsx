@@ -1,4 +1,4 @@
-import { API_URL } from '@/app/config';
+import { API_URL } from '@/api/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useState, useEffect } from 'react';
 export type User = {
@@ -44,32 +44,31 @@ export function AuthProvider(props: React.PropsWithChildren) {
   const [currentUser, setCurrentUser] = useState(null);
   const login = async (credential: Credential) => {
     try {
-        const response = await fetch(`${API_URL}/authentification/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(credential),
-        });
+      const response = await fetch(`${API_URL}/authentification/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credential),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message || 'Identifiants incorrects');
-        }
+      if (!response.ok) {
+        throw new Error(data.message || 'Identifiants incorrects');
+      }
 
-        if (!data.data || !data.data.access_token) {
-            throw new Error('Réponse invalide du serveur');
-        }
+      if (!data.data || !data.data.access_token) {
+        throw new Error('Réponse invalide du serveur');
+      }
 
-        await AsyncStorage.setItem('token', data.data.access_token);
-        setIsLoggedIn(true);
+      await AsyncStorage.setItem('token', data.data.access_token);
+      setIsLoggedIn(true);
     } catch (error) {
-        console.warn('Erreur de login', error);
-        throw error;
+      console.warn('Erreur de login', error);
+      throw error;
     }
-};
-
+  };
 
   const getCurrentUser = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -108,7 +107,7 @@ export function AuthProvider(props: React.PropsWithChildren) {
         setIsLoggedIn(false);
       }
     };
-  
+
     checkLoginStatus();
   }, []);
 

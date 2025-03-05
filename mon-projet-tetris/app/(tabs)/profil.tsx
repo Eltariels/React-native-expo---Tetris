@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserData } from '../api/auth/me';
-import { getProfil } from '../api/profil';
+import { getUserData } from '@/api/auth/me';
+import { getProfil } from '@/api/profil';
 
 export default function ProfileScreen() {
     const [userData, setUserData] = useState<any>({});

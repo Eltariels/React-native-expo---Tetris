@@ -1,4 +1,4 @@
-import { SOCKET_URL } from '@/app/config';
+import { SOCKET_URL } from '@/api/config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';

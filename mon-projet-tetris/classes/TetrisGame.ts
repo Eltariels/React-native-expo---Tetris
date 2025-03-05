@@ -10,7 +10,7 @@ import {
   COLS,
 } from '@/logic/tetrisLogic';
 import { Board, Piece } from '@/types';
-import { saveGameScore } from '@/app/api/games/saveGame';
+import { saveGameScore } from '@/api/games/saveGame';
 
 export class TetrisGame {
   private gameStarted: boolean;

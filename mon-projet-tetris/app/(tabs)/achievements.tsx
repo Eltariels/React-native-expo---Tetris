@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { getAchievements } from '../api/achievements';
+import { getAchievements } from '@/api/achievements';
 
 export default function AchievementsScreen() {
     const [achievements, setAchievements] = useState<any[]>([]);

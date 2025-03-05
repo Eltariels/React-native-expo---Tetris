@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { getLeaderboard } from '../api/leaderboard';
+import { getLeaderboard } from '@/api/leaderboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LeaderboardScreen() {

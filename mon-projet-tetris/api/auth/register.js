@@ -1,6 +1,6 @@
 // /api/register.js
 
-import { API_URL } from '../../config';
+import { API_URL } from '../config';
 
 export const register = async (username, password) => {
     try {
