@@ -19,6 +19,9 @@ const Multiplayer = () => {
 
   useFocusEffect(
     useCallback(() => {
+      setSeed(null);
+      setDuelId(null);
+      setHasFindMatch(false);
       if (!socket) return;
       socket.emit('joinQueue', { userId: currentUser?.id });
 

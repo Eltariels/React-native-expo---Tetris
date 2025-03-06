@@ -256,29 +256,8 @@ export class TetrisGame {
   }
 
   quitGame() {
-    this.isPaused = false;
-    this.gameOver = false;
-    this.gameStarted = false;
-    this.score = 0;
-    this.lines = 0;
-    this.duration = 0;
-    this.hasHeld = false;
-
-    this.board = createEmptyBoard();
-    this.activePiece = this.generatePiece();
-    this.nextPiece = this.generatePiece();
-    this.ghostPiece = computeGhostPiece(this.board, this.activePiece);
-    this.holdPiece = null;
-
-    if (this.dropInterval) {
-        clearInterval(this.dropInterval);
-        this.dropInterval = null;
-    }
-    if (this.timerInterval) {
-        clearInterval(this.timerInterval);
-        this.timerInterval = null;
-    }
-
-    this.triggerUpdate();
+    this.isPaused = true;
+    this.stopAutoDrop();
+    this.stopTimer();
   }
 }
